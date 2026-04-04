@@ -1,6 +1,6 @@
 import type { IProduct } from "../../types";
 
-class Busket {
+export class Busket {
     private busket: IProduct[] = [];
 
     get productsBusket(): IProduct[] {

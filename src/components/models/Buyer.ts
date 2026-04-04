@@ -7,7 +7,7 @@ const emptyBuyerData = {
     email: ''
 }
 
-class Buyer {
+export class Buyer {
     private buyer: IBuyer;
 
     constructor() {

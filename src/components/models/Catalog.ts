@@ -9,7 +9,7 @@ const exampleCatalog: IProduct = {
     price: null,
 };
 
-class Catalog {
+export class Catalog {
     private products: IProduct[]
     private selectedProduct: IProduct
 
