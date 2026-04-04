@@ -1,6 +1,4 @@
-import {IProduct} from "../../types";
-
-export type { IProduct } from '../../types/index.ts'
+import type { IProduct } from "../../types";
 
 const exampleCatalog: IProduct = {
     id: '',
