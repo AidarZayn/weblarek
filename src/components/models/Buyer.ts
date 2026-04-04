@@ -10,8 +10,8 @@ const emptyBuyerData = {
 class Buyer {
     private buyer: IBuyer;
 
-    constructor(buyerParam: IBuyer) {
-        this.buyer = buyerParam
+    constructor() {
+        this.buyer = {...emptyBuyerData};
     }
 
     get buyerData(): IBuyer {
