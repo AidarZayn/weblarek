@@ -1,7 +1,9 @@
 import { Busket } from './components/models/Busket'
 import { Catalog } from './components/models/Catalog'
 import { Buyer } from './components/models/Buyer'
+import { CatalogService } from "./components/models/CatalogService";
 import { apiProducts } from "./utils/data.ts";
+import type { IBuyer } from "./types";
 
 console.log('Пример работы с каталогом');
 
@@ -74,8 +76,8 @@ console.log('Пример работы юзера');
 
 const buyer = new Buyer();
 
-const exampleUser = {
-    payment: null,
+const exampleUser: IBuyer = {
+    payment: 'card',
     address: 'Адоратского 13',
     phone: '89872846800',
     email: 'aidar-dev@mail.ru'
@@ -104,5 +106,35 @@ console.log('------------------------------------------------');
 console.log('Проверка юзера');
 console.log(buyer.buyerData);
 
+console.log('------------------------------------------------');
+
+console.log('Пример получения данных с сервера');
+
+const catalogService = new CatalogService();
+
+try {
+    const catalogResponse = await catalogService.getCatalogProducts();
+    catalog.catalogData = catalogResponse.items;
+    console.log(catalog.catalogData);
+} catch (e) {
+    console.error("Не удалось получить каталог с сервера:", e);
+}
+
+/*Оставил на 2 часть проектной работы*/
+/*
+busket.addItemInBusket(catalog.catalogData[1]);
+busket.addItemInBusket(catalog.catalogData[2]);
+
+buyer.buyerData = exampleUser;
+
+const createOrderValue: IOrder = {
+    ...buyer.buyerData,
+    total: busket.amountBusket,
+    items: busket.productsBusket.filter(item => item.id).map(item => item.id)
+}
+
+const orderResult = await catalogService.postOrder(createOrderValue);
+console.log("Заказ оформлен:", orderResult);
+*/
 
 

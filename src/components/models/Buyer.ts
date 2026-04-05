@@ -1,4 +1,4 @@
-import type { IBuyer, TErrorsBayer } from "../../types";
+import type { IBuyer, IErrorsBayer } from "../../types";
 
 const emptyBuyerData = {
     payment: null,
@@ -26,8 +26,11 @@ export class Buyer {
         this.buyer = {...emptyBuyerData};
     }
 
-    validateForm(): TErrorsBayer {
-        const errors: TErrorsBayer = {...emptyBuyerData};
+    validateForm(): IErrorsBayer {
+        const errors: IErrorsBayer = {
+            ...emptyBuyerData,
+            payment: "",
+        };
         if (this.buyer.address === '') {
             errors.address = 'Поле \'Адрес\' не может быть пустым'
         }
