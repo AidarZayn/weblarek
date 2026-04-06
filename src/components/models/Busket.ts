@@ -32,7 +32,7 @@ export class Busket {
         return this.busket.length;
     }
 
-    hasProductInBasket(value: IProduct): boolean {
-        return this.busket.some(element => element.id === value.id);
+    hasProductInBasket(id: string): boolean {
+        return this.busket.some(element => element.id === id);
     }
 }

@@ -62,7 +62,7 @@ console.log(busket.amountBusket);
 
 console.log('------------------------------------------------');
 console.log('Проверка наличия товара');
-console.log(busket.hasProductInBasket(catalog.catalogData[0]));
+console.log(busket.hasProductInBasket(catalog.catalogData[0].id));
 
 console.log('------------------------------------------------');
 console.log('---Очистка корзины---');
