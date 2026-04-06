@@ -18,8 +18,8 @@ export class Buyer {
         return this.buyer;
     }
 
-    set buyerData(Buyer: IBuyer) {
-        this.buyer = Buyer;
+    set buyerData(Buyer: Partial<IBuyer>) {
+        this.buyer = { ...this.buyer, ...Buyer };
     }
 
     clearBuyerData(): void {

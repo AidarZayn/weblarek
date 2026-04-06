@@ -23,11 +23,7 @@ export interface IBuyer {
     address: string;
 }
 
-export interface IErrorsBayer
-    extends Omit<IBuyer, "payment">
-{
-    payment: string;
-}
+export type IErrorsBayer = Partial<Record<keyof IBuyer, string>>
 
 export interface ICatalogFromApi {
     total: number;

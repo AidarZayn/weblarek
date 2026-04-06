@@ -11,8 +11,8 @@ export class Busket {
         this.busket.push(value);
     }
 
-    deleteProductInBusket(value: IProduct) {
-        this.busket = this.busket.filter(item => item.id !== value.id);
+    deleteProductInBusket(id: string) {
+        this.busket = this.busket.filter(item => item.id !== id);
     }
 
     clearBusket(): void {

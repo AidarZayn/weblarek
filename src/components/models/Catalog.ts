@@ -1,21 +1,12 @@
 import type { IProduct } from "../../types";
 
-const exampleCatalog: IProduct = {
-    id: '',
-    title: '',
-    description: '',
-    image: '',
-    category: '',
-    price: null,
-};
-
 export class Catalog {
     private products: IProduct[]
-    private selectedProduct: IProduct
+    private selectedProduct: IProduct | null
 
     constructor() {
-        this.products = [{...exampleCatalog}]
-        this.selectedProduct = {...exampleCatalog}
+        this.products = []
+        this.selectedProduct = null
     }
 
     get catalogData(): IProduct[] {
@@ -26,8 +17,12 @@ export class Catalog {
         this.products = products;
     }
 
-    get selectedProductData(): IProduct {
-        return this.selectedProduct;
+    get selectedProductData(): IProduct | null {
+        if (this.selectedProduct !== null) {
+            return this.selectedProduct;
+        } else {
+            return null
+        }
     }
 
     set selectedProductData(product: IProduct) {

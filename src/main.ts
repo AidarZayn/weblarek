@@ -4,45 +4,44 @@ import { Buyer } from './components/models/Buyer'
 import { CatalogService } from "./components/models/CatalogService";
 import { apiProducts } from "./utils/data.ts";
 import type { IBuyer } from "./types";
+import { API_URL } from "./utils/constants.ts";
+import { Api } from './components/base/Api.ts'
 
-console.log('Пример работы с каталогом');
+console.log('---Пример работы с каталогом---');
 
 const catalog = new Catalog();
 
-// Заполнение каталога его товарами
+console.log('---Заполнение каталога его товарами---')
 catalog.catalogData = apiProducts.items;
 
-// Проверка данных в консоль
+console.log('Проверка заполнения данных')
 console.log(catalog.catalogData);
 
 console.log('------------------------------------------------');
 
-// Имитация выбора товара
+console.log('---Выбор товара---')
 catalog.selectedProductData = catalog.catalogData[0]
 
-// Вывод имитационного товара
+console.log('Вывод выбранного товара')
 console.log(catalog.selectedProductData);
 
 console.log('------------------------------------------------');
 
-// Вывод в консоль элемента по его ID
+console.log('Вывод в консоль элемента по его ID')
 console.log(catalog.findProductById(catalog.catalogData[0].id));
 
 console.log('------------------------------------------------');
 
-console.log('Пример работы с корзиной');
+console.log('---Пример работы с корзиной---');
 
 const busket  = new Busket();
 
 console.log('------------------------------------------------');
 
-console.log('Пример добавления элемента в корзину');
+console.log('---Пример добавления элемента в корзину---');
 busket.addItemInBusket(catalog.selectedProductData);
 busket.addItemInBusket(catalog.catalogData[1]);
 busket.addItemInBusket(catalog.catalogData[2]);
-
-console.log('------------------------------------------------');
-
 console.log('Проверка корзины');
 console.log(busket.productsBusket)
 
@@ -52,9 +51,8 @@ console.log('Проверка длины массива');
 console.log(busket.busketLength)
 
 console.log('------------------------------------------------');
-busket.deleteProductInBusket(catalog.catalogData[1])
-
-console.log('------------------------------------------------');
+console.log('---Удаление товара из корзина по его ID---');
+busket.deleteProductInBusket(catalog.catalogData[1].id)
 console.log('Проверка корзины');
 console.log(busket.productsBusket)
 
@@ -67,14 +65,16 @@ console.log('Проверка наличия товара');
 console.log(busket.hasProductInBasket(catalog.catalogData[0]));
 
 console.log('------------------------------------------------');
-console.log('Очистка корзины');
+console.log('---Очистка корзины---');
 busket.clearBusket();
+console.log('Проверка корзины после очистки');
 console.log(busket.productsBusket);
 console.log('------------------------------------------------');
 
-console.log('Пример работы юзера');
+console.log('---Пример работы юзера---');
 
 const buyer = new Buyer();
+const classForNotCompleteBuyer = new Buyer();
 
 const exampleUser: IBuyer = {
     payment: 'card',
@@ -83,23 +83,37 @@ const exampleUser: IBuyer = {
     email: 'aidar-dev@mail.ru'
 };
 
+const exampleNotCompleteUser: Partial<IBuyer> = {
+    payment: 'cash',
+    address: 'Рафаэля Сафиуллина 36'
+}
+
 console.log('------------------------------------------------');
 
-console.log('Закидываем юзера');
+console.log('Проверка заполнения неполных данных во второго юзера');
+classForNotCompleteBuyer.buyerData = exampleNotCompleteUser;
+console.log(classForNotCompleteBuyer.buyerData);
+
+console.log('Проверка метода с валидацией неполных данных второго юзера')
+const errorsNotCompleteBuyer = classForNotCompleteBuyer.validateForm();
+console.log(errorsNotCompleteBuyer);
+
+console.log('------------------------------------------------');
+
+console.log('---Закидываем полного юзера---');
 buyer.buyerData = exampleUser;
-
-console.log('------------------------------------------------');
-console.log('Проверка юзера');
+console.log('Проверка полного юзера');
 console.log(buyer.buyerData);
 
 console.log('------------------------------------------------');
+
 console.log('Проверка ошибок');
 const errors = buyer.validateForm()
 console.log(errors);
 
 console.log('------------------------------------------------');
 
-console.log('Очистка данных юзера');
+console.log('---Очистка данных юзера---');
 buyer.clearBuyerData();
 
 console.log('------------------------------------------------');
@@ -108,9 +122,9 @@ console.log(buyer.buyerData);
 
 console.log('------------------------------------------------');
 
-console.log('Пример получения данных с сервера');
-
-const catalogService = new CatalogService();
+console.log('Получения данных с сервера');
+const api = new Api(API_URL);
+const catalogService = new CatalogService(api);
 
 try {
     const catalogResponse = await catalogService.getCatalogProducts();
