@@ -27,10 +27,7 @@ export class Buyer {
     }
 
     validateForm(): IErrorsBayer {
-        const errors: IErrorsBayer = {
-            ...emptyBuyerData,
-            payment: "",
-        };
+        const errors: IErrorsBayer = {};
         if (this.buyer.address === '') {
             errors.address = 'Поле \'Адрес\' не может быть пустым'
         }
