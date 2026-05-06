@@ -6,6 +6,7 @@ import { apiProducts } from "./utils/data.ts";
 import type { IBuyer } from "./types";
 import { API_URL } from "./utils/constants.ts";
 import { Api } from './components/base/Api.ts'
+import './scss/styles.scss';
 
 console.log('---Пример работы с каталогом---');
 
