@@ -1,4 +1,5 @@
-import type { IBuyer, IErrorsBayer } from "../../types";
+import type { IBuyer } from "../../types";
+import { IEvents } from "../base/Events";
 
 const emptyBuyerData = {
     payment: null,
@@ -8,39 +9,52 @@ const emptyBuyerData = {
 }
 
 export class Buyer {
-    private buyer: IBuyer;
+    private buyer: IBuyer | null = null;
 
-    constructor() {
-        this.buyer = {...emptyBuyerData};
-    }
+    constructor(protected events: IEvents) {}
 
-    get buyerData(): IBuyer {
+    get buyerData(): IBuyer | null {
         return this.buyer;
     }
 
     set buyerData(Buyer: Partial<IBuyer>) {
-        this.buyer = { ...this.buyer, ...Buyer };
+        if (!this.buyer) {
+            this.buyer = {
+                payment: null,
+                email: '',
+                phone: '',
+                address: ''
+            };
+        }
+        Object.assign(this.buyer, Buyer);
+        this.events.emit('buyer:changed');
     }
 
     clearBuyerData(): void {
         this.buyer = {...emptyBuyerData};
     }
 
-    validateForm(): IErrorsBayer {
-        const errors: IErrorsBayer = {};
-        if (this.buyer.address === '') {
-            errors.address = 'Поле \'Адрес\' не может быть пустым'
-        }
-        if (this.buyer.phone === '') {
-            errors.phone = 'Поле \'Телефон\' не может быть пустым'
-        }
-        if (this.buyer.email === '') {
-            errors.email = 'Поле \'Эл. почта\' не может быть пустым'
-        }
-        if (this.buyer.payment === null) {
-            errors.payment = 'Поле \'Способ оплаты\' не может быть пустым'
+    validateAddress(): {[key: string]: string} {
+        const error: {[key: string]: string} = {};
+
+        if (!this.buyer?.address || this.buyer?.address.trim() === '') {
+            error.address = 'Необходимо указать адрес';
         }
 
-        return errors;
+        return error;
+    }
+
+    validateContacts(): {[key: string]: string} {
+        const error: {[key: string]: string} = {};
+
+        if (!this.buyer?.email || !this.buyer?.email.includes('@')) {
+            error.email = 'Введите корректный email';
+        }
+
+        if (!this.buyer?.phone || this.buyer?.phone.trim() === '') {
+            error.phone = 'Введите телефон';
+        }
+
+        return error;
     }
 }

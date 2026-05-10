@@ -1,6 +1,6 @@
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
-type TPayment = 'card' | 'cash';
+export type TPayment = 'card' | 'cash';
 
 export interface IApi {
     get<T extends object>(uri: string): Promise<T>;
@@ -23,8 +23,6 @@ export interface IBuyer {
     address: string;
 }
 
-export type IErrorsBayer = Partial<Record<keyof IBuyer, string>>
-
 export interface ICatalogFromApi {
     total: number;
     items: IProduct[];
@@ -38,4 +36,8 @@ export interface IOrder extends IBuyer {
 export interface IOrderResult {
     id: string;
     total: number;
+}
+
+export interface ISuccessActions {
+    onOrdered?: () => void;
 }
