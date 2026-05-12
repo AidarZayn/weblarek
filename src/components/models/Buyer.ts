@@ -1,4 +1,4 @@
-import type { IBuyer } from "../../types";
+import type { IBuyer, IErrorsBayer } from "../../types";
 import { IEvents } from "../base/Events";
 
 const emptyBuyerData = {
@@ -32,29 +32,24 @@ export class Buyer {
 
     clearBuyerData(): void {
         this.buyer = {...emptyBuyerData};
+        this.events.emit('buyer:changed');
     }
 
-    validateAddress(): {[key: string]: string} {
-        const error: {[key: string]: string} = {};
-
-        if (!this.buyer?.address || this.buyer?.address.trim() === '') {
-            error.address = 'Необходимо указать адрес';
+    validateForm(): IErrorsBayer {
+        const errors: IErrorsBayer = {};
+        if (this.buyer?.address === '') {
+            errors.address = 'Поле \'Адрес\' не может быть пустым'
+        }
+        if (this.buyer?.phone === '') {
+            errors.phone = 'Поле \'Телефон\' не может быть пустым'
+        }
+        if (this.buyer?.email === '') {
+            errors.email = 'Поле \'Эл. почта\' не может быть пустым'
+        }
+        if (this.buyer?.payment === null) {
+            errors.payment = 'Поле \'Способ оплаты\' не может быть пустым'
         }
 
-        return error;
-    }
-
-    validateContacts(): {[key: string]: string} {
-        const error: {[key: string]: string} = {};
-
-        if (!this.buyer?.email || !this.buyer?.email.includes('@')) {
-            error.email = 'Введите корректный email';
-        }
-
-        if (!this.buyer?.phone || this.buyer?.phone.trim() === '') {
-            error.phone = 'Введите телефон';
-        }
-
-        return error;
+        return errors;
     }
 }

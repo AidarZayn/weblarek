@@ -17,17 +17,13 @@ export class Catalog {
     }
 
     get selectedProductData(): IProduct | null {
-        if (this.selectedProduct !== null) {
-            return this.selectedProduct;
-        } else {
-            return null
-        }
+        return this.selectedProduct;
     }
 
     set selectedProductData(id: string) {
         const product = this.findProductById(id);
         this.selectedProduct = product ?? null;
-        this.events.emit('product:changed', { id });
+        this.events.emit('product:changed');
     }
 
     findProductById(productId: string): IProduct | undefined {

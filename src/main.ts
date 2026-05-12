@@ -55,7 +55,9 @@ const successView = new SuccessView(cloneTemplate(successTemplate), {
 
 events.on('catalog:changed', () => {
     const itemCards = catalogModel.catalogData.map((item: IProduct) => {
-        const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), events);
+        const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
+            onClick: () => events.emit('card:select, item'),
+        });
         return card.render(item);
     });
     gallery.render({ catalog: itemCards });

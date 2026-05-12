@@ -7,6 +7,8 @@ export interface IApi {
     post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
+export type IErrorsBayer = Partial<Record<keyof IBuyer, string>>
+
 export interface IProduct {
     id: string;
     title: string;
@@ -40,4 +42,8 @@ export interface IOrderResult {
 
 export interface ISuccessActions {
     onOrdered?: () => void;
+}
+
+export interface ICardActions {
+    onClick: (event: Event) => void;
 }

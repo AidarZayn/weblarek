@@ -2,7 +2,7 @@ import { ensureElement } from "../../../utils/utils";
 import { IProduct } from "../../../types";
 import { Card } from "./Card";
 import { categoryMap } from "../../../utils/constants";
-import { IEvents } from "../../base/Events";
+import { ICardActions } from '../../../types'
 
 export type TCardCatalog = Pick <IProduct, 'id' | 'title' | 'image' | 'category'>;
 
@@ -12,15 +12,15 @@ export class CardCatalog extends Card<TCardCatalog> {
     protected cardImage: HTMLImageElement;
     protected cardCategory: HTMLElement;
 
-    constructor(container: HTMLElement, protected events: IEvents) {
+    constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
 
         this.cardImage = ensureElement<HTMLImageElement>('.card__image', this.container);
         this.cardCategory = ensureElement<HTMLElement>('.card__category', this.container);
 
-        this.container.addEventListener('click', () => {
-            this.events.emit('card:select', { id: this.id });
-        });
+        if (actions?.onClick) {
+            this.container.addEventListener("click", actions.onClick);
+        }
     };
 
     set category(text: string) {
@@ -37,9 +37,4 @@ export class CardCatalog extends Card<TCardCatalog> {
     set image(image: string) {
         this.setImage(this.cardImage, image, this.title);
     };
-
-    render(data: TCardCatalog): HTMLElement {
-        this.id = data.id;
-        return super.render(data);
-    }
 }
