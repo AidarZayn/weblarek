@@ -49,3 +49,11 @@ export interface ICardActions {
     deleteButtonClickHandler?: () => void;
     purchaseButtonClickHandler?: () => void;
 }
+
+export interface IFormActions {
+    submitButtonClickHandler?: () => void;
+    paymentButtonClickHandler?: (payment: TPayment) => void;
+    addressInputChangeHandler?: (address: string) => void;
+    emailInputChangeHandler?: (email: string) => void;
+    phoneInputChangeHandler?: (phone: string) => void;
+}

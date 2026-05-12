@@ -1,47 +1,39 @@
 import { Component } from '../../base/Component';
 import { ensureElement } from '../../../utils/utils';
-import { IEvents } from '../../base/Events';
+import { IFormActions } from "../../../types";
 
-export abstract class Form extends Component<{}> {
+interface IForm<T> {
+    errors: {[key in keyof T]?: string};
+    isValid: boolean;
+}
+
+export class Form<T extends object> extends Component<IForm<T> & T> {
     protected error: HTMLElement;
     protected button: HTMLButtonElement;
 
     constructor(
         container: HTMLElement,
-        protected events: IEvents,
-        protected buttonName: string
+        actions?: IFormActions
     ) {
         super(container);
 
-        this.error = ensureElement<HTMLElement>('.form__errors', this.container);
-        this.button = ensureElement<HTMLButtonElement>('button[type="submit"]', this.container);
+        const modalActionsContainer = ensureElement<HTMLDivElement>('.modal__actions', this.container);
+        this.error = ensureElement<HTMLElement>('.form__errors', modalActionsContainer);
+        this.button = ensureElement<HTMLButtonElement>('button', modalActionsContainer);
 
-        this.container.addEventListener('submit', (event: SubmitEvent) => {
+        this.button.addEventListener('click', (event) => {
             event.preventDefault();
-            this.events.emit(this.buttonName);
+            if (actions?.submitButtonClickHandler) {
+                actions.submitButtonClickHandler();
+            }
         });
     };
 
-    set buttonStateDisabled(value: boolean) {
-        this.button.disabled = value;
+    set errors(value: {[key in keyof T]: string}) {
+        this.error.textContent = Object.values(value).join(', ');
     }
 
-    set errors(value: string) {
-        this.error.textContent = String(value);
-    };
-
-    removeErrors() {
-        this.error.textContent = '';
-    }
-
-    isCheckErrors(errors: { [key: string]: string }): void {
-        const errorsList = Object.values(errors).filter(Boolean);
-        if (errorsList.length > 0) {
-            this.errors = errorsList.join(', ');
-            this.button.disabled = true;
-        } else {
-            this.removeErrors();
-            this.button.disabled = false;
-        }
+    set isValid(value: boolean) {
+        this.button.disabled = !value;
     }
 }

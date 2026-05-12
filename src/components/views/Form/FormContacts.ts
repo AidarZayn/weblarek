@@ -1,23 +1,31 @@
 import { ensureElement } from '../../../utils/utils';
 import { Form } from './Form';
-import { IEvents } from '../../base/Events';
+import { IFormActions } from "../../../types";
 
-export class FormContacts extends Form {
+interface IContactsForm {
+    email: string;
+    phone: string;
+}
+
+export class FormContacts extends Form<IContactsForm> {
     protected emailInput: HTMLInputElement;
     protected phoneInput: HTMLInputElement;
 
-    constructor(container: HTMLElement, events: IEvents) {
-        super(container, events, 'contacts:submit');
+    constructor(container: HTMLElement, actions?: IFormActions) {
+        super(container, actions);
 
         this.emailInput = ensureElement<HTMLInputElement>('input[name="email"]', this.container);
         this.phoneInput = ensureElement<HTMLInputElement>('input[name="phone"]', this.container);
 
-        this.emailInput.addEventListener('input', () => {
-            this.events.emit('buyer:change', { email: this.emailInput.value });
+        this.emailInput.addEventListener('change', () => {
+            if (actions?.emailInputChangeHandler) {
+                actions.emailInputChangeHandler(this.emailInput.value);
+            }
         });
-
-        this.phoneInput.addEventListener('input', () => {
-            this.events.emit('buyer:change', { phone: this.phoneInput.value });
+        this.phoneInput.addEventListener('change', () => {
+            if (actions?.phoneInputChangeHandler) {
+                actions.phoneInputChangeHandler(this.phoneInput.value);
+            }
         });
     };
 
@@ -27,9 +35,5 @@ export class FormContacts extends Form {
 
     set phone(value: string) {
         this.phoneInput.value = value;
-    }
-
-    isContactsValid(errors?: { [key: string]: string }): void {
-        this.isCheckErrors(errors || {});
     }
 }
