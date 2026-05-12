@@ -1,6 +1,6 @@
 import { ensureElement } from "../../../utils/utils";
 import { Card, ICard } from "./Card";
-import { categoryMap } from "../../../utils/constants";
+import { categoryMap, CDN_URL } from "../../../utils/constants";
 import { ICardActions } from "../../../types";
 
 type CategoryKey = keyof typeof categoryMap;
@@ -21,13 +21,13 @@ export class CardPreview extends Card<ICard> {
         this.cardDescription = ensureElement<HTMLElement>('.card__text', this.container);
         this.cardButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
-        if (actions?.onClick) {
-            this.cardButton?.addEventListener("click", actions.onClick);
+        if (actions?.purchaseButtonClickHandler) {
+            this.cardButton?.addEventListener("click", actions.purchaseButtonClickHandler);
         }
     }
 
     set image(image: string) {
-        this.setImage(this.cardImage, image, this.title);
+        this.setImage(this.cardImage, CDN_URL + image, this.title);
     }
 
     set category(category: string) {
@@ -42,13 +42,33 @@ export class CardPreview extends Card<ICard> {
     }
 
     set description(value: string) {
-        this.cardDescription.textContent = String(value);
+        this.cardDescription.textContent = value;
     }
 
     set buttonText(value: CardButtonText) {
         if (this.cardButton) {
             this.cardButton.textContent = value;
             this.cardButton.disabled = value === "Недоступно";
+        }
+    }
+
+    override set price(value: number | null) {
+        if (value) {
+            this.cardButton.disabled = false;
+        }else {
+            this.cardButton.textContent = 'Недоступно';
+            this.cardButton.disabled = true;
+        }
+        super.price = value;
+    }
+
+    set isInBasket(value: boolean) {
+        if (!this.cardButton.disabled) {
+            if (value) {
+                this.cardButton.textContent = 'Удалить из корзины';
+            }else {
+                this.cardButton.textContent = 'Купить';
+            }
         }
     }
 }

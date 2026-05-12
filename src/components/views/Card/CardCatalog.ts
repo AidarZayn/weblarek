@@ -1,7 +1,7 @@
 import { ensureElement } from "../../../utils/utils";
 import { IProduct } from "../../../types";
 import { Card } from "./Card";
-import { categoryMap } from "../../../utils/constants";
+import { categoryMap, CDN_URL } from "../../../utils/constants";
 import { ICardActions } from '../../../types'
 
 export type TCardCatalog = Pick <IProduct, 'id' | 'title' | 'image' | 'category'>;
@@ -24,7 +24,7 @@ export class CardCatalog extends Card<TCardCatalog> {
     };
 
     set category(text: string) {
-        this.cardCategory.textContent = String(text);
+        this.cardCategory.textContent = text;
 
         for (const key in categoryMap) {
             this.cardCategory.classList.toggle(
@@ -35,6 +35,6 @@ export class CardCatalog extends Card<TCardCatalog> {
     };
 
     set image(image: string) {
-        this.setImage(this.cardImage, image, this.title);
+        this.setImage(this.cardImage, CDN_URL + image, this.title);
     };
 }

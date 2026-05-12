@@ -45,5 +45,7 @@ export interface ISuccessActions {
 }
 
 export interface ICardActions {
-    onClick: (event: Event) => void;
+    onClick?: () => void;
+    deleteButtonClickHandler?: () => void;
+    purchaseButtonClickHandler?: () => void;
 }

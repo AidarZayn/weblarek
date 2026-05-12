@@ -5,13 +5,16 @@ import { ICardActions } from "../../../types";
 
 export class CardInBasket extends Card<ICard> {
     protected cardIndex: HTMLElement;
+    protected cardDelete: HTMLButtonElement;
 
     constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
 
         this.cardIndex = ensureElement<HTMLElement>('.basket__item-index', this.container);
-        if (actions?.onClick) {
-            this.container.addEventListener("click", actions.onClick);
+        this.cardDelete = ensureElement<HTMLButtonElement>('.card__button', this.container);
+
+        if(actions?.deleteButtonClickHandler) {
+            this.cardDelete.addEventListener('click', actions.deleteButtonClickHandler);
         }
     };
 
