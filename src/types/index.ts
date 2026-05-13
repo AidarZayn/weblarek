@@ -44,10 +44,6 @@ export interface IOrderResult {
     total: number;
 }
 
-export interface ISuccessActions {
-    onOrdered?: () => void;
-}
-
 export interface ICardActions {
     onClick?: () => void;
     deleteButtonClickHandler?: () => void;
@@ -63,5 +59,6 @@ export interface IFormActions {
 }
 
 export interface ISuccessActions {
+    onOrdered?: () => void;
     successButtonClickHandler?: () => void;
 }
