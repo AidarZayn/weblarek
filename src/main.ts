@@ -185,6 +185,7 @@ events.on(EventEnum.BasketOrderButtonClick, () => {
 
 events.on(EventEnum.FormOrderSetPayment, ({payment}: {payment: TPayment}) => {
     buyerModel.buyerData = { payment };
+    formOrder.payment = payment;
 });
 
 events.on(EventEnum.FormOrderSetAddress, ({address}: {address: string}) => {
@@ -216,6 +217,9 @@ events.on<{errors: IErrorsBayer}>(EventEnum.FormOrderValidated, ({errors}) => {
     const isValid = !('payment' in errors) && !('address' in errors);
     formOrder.errors = errors as any;
     formOrder.isValid = isValid;
+    if (buyerModel.buyerData) {
+        formOrder.payment = buyerModel.buyerData.payment ?? '';
+    }
 });
 
 events.on<{errors: IErrorsBayer}>(EventEnum.FormContactsValidated, ({errors}) => {
