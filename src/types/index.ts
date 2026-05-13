@@ -30,7 +30,11 @@ export interface ICatalogFromApi {
     items: IProduct[];
 }
 
-export interface IOrder extends IBuyer {
+export interface IOrder {
+    payment: TPayment;
+    email: string;
+    phone: string;
+    address: string;
     total: number;
     items: string[];
 }
@@ -56,4 +60,8 @@ export interface IFormActions {
     addressInputChangeHandler?: (address: string) => void;
     emailInputChangeHandler?: (email: string) => void;
     phoneInputChangeHandler?: (phone: string) => void;
+}
+
+export interface ISuccessActions {
+    successButtonClickHandler?: () => void;
 }

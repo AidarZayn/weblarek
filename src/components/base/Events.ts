@@ -1,5 +1,35 @@
 // Хорошая практика даже простые типы выносить в алиасы
 // Зато когда захотите поменять это достаточно сделать в одном месте
+
+export enum EventEnum {
+    BasketOpen = 'basket:open',
+    BasketAddProduct = 'basketModel:add',
+    BasketDeleteProduct = 'basketModel:delete',
+    BasketClear = 'basketModel:clear',
+    BasketOrderButtonClick = 'basket:orderButtonClick',
+    BuyerChange = 'buyerModel:change',
+    BuyerClearData = 'buyerModel:clearData',
+    BuyerValidate = 'buyerModel:validate',
+    CatalogSetAllProducts = 'catalogModel:setAll',
+    CatalogSetSelectedProduct = 'catalogModel:setSelected',
+    CardCatalogClick = 'cardCatalog:click',
+    CardBasketDelete = 'cardBasket:delete',
+    CardPreviewButtonClick = 'cardPreview:buttonClick',
+    CardPreviewPurchase = 'cardPreview:purchase',
+    CardPreviewDelete = 'cardPreview:delete',
+    FormOrderValidated = 'formOrder:validated',
+    FormOrderSubmit = 'formOrder:submit',
+    FormOrderSetPayment = 'formOrder:changePayment',
+    FormOrderSetAddress = 'formOrder:changeAddress',
+    FormContactsValidated = 'formContacts:validated',
+    FormContactsSubmit = 'formContacts:submit',
+    FormContactsChangeEmail = 'formContacts:changeEmail',
+    FormContactsChangePhone = 'formContacts:changePhone',
+    SuccessSubmit = 'success:submit',
+    CloseModal = 'modal:close',
+    LarekApiGetCatalogProducts = 'larekApi:getCatalogProducts',
+}
+
 type EventName = string | RegExp;
 type Subscriber = Function;
 type EmitterEvent = {

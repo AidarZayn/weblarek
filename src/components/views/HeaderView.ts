@@ -1,6 +1,6 @@
 import { Component } from '../base/Component';
 import { ensureElement } from '../../utils/utils';
-import { IEvents } from '../base/Events';
+import { EventEnum, IEvents } from "../base/Events";
 
 interface BasketCounter {
     count: number;
@@ -17,7 +17,7 @@ export class HeaderView extends Component<BasketCounter> {
         this.basketButton = ensureElement<HTMLButtonElement>('.header__basket', this.container);
 
         this.basketButton.addEventListener('click', () => {
-            this.events.emit('basket:open');
+            this.events.emit(EventEnum.BasketOpen);
         });
     };
 

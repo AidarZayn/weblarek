@@ -1,16 +1,15 @@
-import { ICatalogFromApi, IOrder, IOrderResult } from "../../types";
+import { ICatalogFromApi, IOrder, IOrderResult, IProduct } from "../../types";
 import { Api } from "../base/Api.ts";
 
-export class ApiModel extends Api{
-    constructor(baseUrl: string, options: RequestInit = {}) {
-        super(baseUrl, options);
+export class ApiModel {
+    private api: Api;
+    constructor(api: Api) {
+        this.api = api;
     }
-
-    getCatalogProducts(): Promise<ICatalogFromApi> {
-        return this.get('/product/');
+    getCatalogProducts():Promise<IProduct[]> {
+        return this.api.get<ICatalogFromApi>('/product').then((data) => data.items);
     }
-
-    postOrder(order: IOrder): Promise<IOrderResult>{
-        return this.post('/order', order).then((data => data as IOrderResult));
+    postOrder(reqData:IOrder): Promise<IOrderResult> { // отправка данных о заказе
+        return this.api.post<IOrderResult>('/order', reqData);
     }
 }

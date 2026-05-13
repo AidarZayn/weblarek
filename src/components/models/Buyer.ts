@@ -1,5 +1,5 @@
 import type { IBuyer, IErrorsBayer } from "../../types";
-import { IEvents } from "../base/Events";
+import { IEvents, EventEnum } from "../base/Events";
 
 const emptyBuyerData = {
     payment: null,
@@ -27,12 +27,12 @@ export class Buyer {
             };
         }
         Object.assign(this.buyer, Buyer);
-        this.events.emit('buyer:changed');
+        this.events.emit(EventEnum.BuyerChange);
     }
 
     clearBuyerData(): void {
         this.buyer = {...emptyBuyerData};
-        this.events.emit('buyer:changed');
+        this.events.emit(EventEnum.BuyerClearData);
     }
 
     validateForm(): IErrorsBayer {
@@ -49,7 +49,7 @@ export class Buyer {
         if (this.buyer?.payment === null) {
             errors.payment = 'Поле \'Способ оплаты\' не может быть пустым'
         }
-
+        this.events.emit(EventEnum.BuyerValidate);
         return errors;
     }
 }

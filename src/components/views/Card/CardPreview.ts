@@ -1,13 +1,15 @@
 import { ensureElement } from "../../../utils/utils";
-import { Card, ICard } from "./Card";
+import { Card } from "./Card";
 import { categoryMap, CDN_URL } from "../../../utils/constants";
-import { ICardActions } from "../../../types";
+import { ICardActions, IProduct } from "../../../types";
+
+export type TCardPreview = Pick<IProduct, 'image' | 'category' | 'description'> & {isInBasket: boolean}
 
 type CategoryKey = keyof typeof categoryMap;
 
 type CardButtonText = "В корзину" | "Удалить из корзины" | "Недоступно";
 
-export class CardPreview extends Card<ICard> {
+export class CardPreview extends Card<TCardPreview> {
     protected cardImage: HTMLImageElement;
     protected cardCategory: HTMLElement;
     protected cardDescription: HTMLElement;

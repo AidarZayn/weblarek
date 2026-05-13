@@ -1,5 +1,5 @@
 import type { IProduct } from "../../types";
-import { IEvents } from "../base/Events";
+import { IEvents, EventEnum } from "../base/Events";
 
 export class Catalog {
     private products: IProduct[] = [];
@@ -13,7 +13,7 @@ export class Catalog {
 
     set catalogData(products: IProduct[]) {
         this.products = products;
-        this.events.emit('catalog:changed');
+        this.events.emit(EventEnum.CatalogSetAllProducts);
     }
 
     get selectedProductData(): IProduct | null {
@@ -23,7 +23,7 @@ export class Catalog {
     set selectedProductData(id: string) {
         const product = this.findProductById(id);
         this.selectedProduct = product ?? null;
-        this.events.emit('product:changed');
+        this.events.emit(EventEnum.CatalogSetSelectedProduct);
     }
 
     findProductById(productId: string): IProduct | undefined {

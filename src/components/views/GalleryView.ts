@@ -1,5 +1,5 @@
 import { Component } from '../base/Component';
-import { ensureElement } from '../../utils/utils';
+import { IEvents } from "../base/Events";
 
 interface CatalogData {
     catalog: HTMLElement[];
@@ -8,10 +8,10 @@ interface CatalogData {
 export class GalleryView extends Component<CatalogData> {
     protected catalogElement: HTMLElement;
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, protected events: IEvents,) {
         super(container);
 
-        this.catalogElement = ensureElement<HTMLElement>('.gallery', this.container);
+        this.catalogElement = this.container;
     };
 
     set catalog(items: HTMLElement[]) {

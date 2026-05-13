@@ -1,5 +1,5 @@
 import type { IProduct } from "../../types";
-import { IEvents } from "../base/Events"
+import { IEvents, EventEnum } from "../base/Events"
 
 export class Basket {
     private basket: IProduct[] = [];
@@ -12,17 +12,17 @@ export class Basket {
 
     addItemInBasket(value: IProduct) {
         this.basket.push(value);
-        this.events.emit('basket:change');
+        this.events.emit(EventEnum.BasketAddProduct);
     }
 
     deleteProductInBasket(id: string) {
         this.basket = this.basket.filter(item => item.id !== id);
-        this.events.emit('basket:change');
+        this.events.emit(EventEnum.BasketDeleteProduct);
     }
 
     clearBasket(): void {
         this.basket = [];
-        this.events.emit('basket:change');
+        this.events.emit(EventEnum.BasketClear);
     }
 
     get amountBasket(): number {
