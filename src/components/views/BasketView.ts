@@ -3,9 +3,9 @@ import { ensureElement } from '../../utils/utils';
 import { EventEnum, IEvents } from "../base/Events";
 
 interface IBasket {
-    items: HTMLElement[];
-    totalPrice: number;
-    title?: string;
+    basket: HTMLElement[];
+    total: number;
+    isValid: boolean;
 }
 
 export class BasketView extends Component<IBasket> {
@@ -31,5 +31,9 @@ export class BasketView extends Component<IBasket> {
 
     set total(price: number) {
         this.totalPrice.textContent = `${price} синапсов`;
+    };
+
+    set isValid(value: boolean) {
+        this.basketButton.disabled = !value;
     };
 }

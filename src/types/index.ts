@@ -31,10 +31,10 @@ export interface ICatalogFromApi {
 }
 
 export interface IOrder {
-    payment: TPayment;
-    email: string;
-    phone: string;
-    address: string;
+    payment?: TPayment | null;
+    email?: string;
+    phone?: string;
+    address?: string;
     total: number;
     items: string[];
 }

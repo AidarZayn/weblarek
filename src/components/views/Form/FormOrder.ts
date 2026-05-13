@@ -26,7 +26,7 @@ export class FormOrder extends Form<IOrderForm> {
             })
         })
 
-        this.addressInput.addEventListener('change', () => {
+        this.addressInput.addEventListener('input', () => {
             if (actions?.addressInputChangeHandler) {
                 actions.addressInputChangeHandler(this.addressInput.value);
             }

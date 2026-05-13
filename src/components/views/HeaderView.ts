@@ -3,7 +3,7 @@ import { ensureElement } from '../../utils/utils';
 import { EventEnum, IEvents } from "../base/Events";
 
 interface BasketCounter {
-    count: number;
+    counter: number;
 }
 
 export class HeaderView extends Component<BasketCounter> {

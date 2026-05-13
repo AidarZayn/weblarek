@@ -12,12 +12,13 @@ export class Basket {
 
     addItemInBasket(value: IProduct) {
         this.basket.push(value);
-        this.events.emit(EventEnum.BasketAddProduct);
+        this.events.emit(EventEnum.BasketAddProduct, {product: value});
     }
 
     deleteProductInBasket(id: string) {
+        const deletedProduct = this.basket.find(item => item.id === id);
         this.basket = this.basket.filter(item => item.id !== id);
-        this.events.emit(EventEnum.BasketDeleteProduct);
+        this.events.emit(EventEnum.BasketDeleteProduct, {product: deletedProduct});
     }
 
     clearBasket(): void {

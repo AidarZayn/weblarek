@@ -55,9 +55,9 @@ const cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
     purchaseButtonClickHandler: () => {
         const selectedProduct = catalogModel.selectedProductData;
         if(selectedProduct) {
-            if(basketModel.hasProductInBasket(selectedProduct.id)) {
+            if (basketModel.hasProductInBasket(selectedProduct.id)) {
                 events.emit(EventEnum.CardPreviewDelete, {product: selectedProduct});
-            }else {
+            } else {
                 events.emit(EventEnum.CardPreviewPurchase, {product: selectedProduct});
             }
         }
@@ -93,6 +93,10 @@ const successView = new SuccessView(cloneTemplate(successTemplate), {
     }
 });
 
+api.getCatalogProducts().then((data) =>{
+    catalogModel.catalogData = data;
+}).catch();
+
 events.on<{products: IProduct[]}>(EventEnum.CatalogSetAllProducts, ({products}) => {
     const itemCards = products.map((item) => {
         const onClick = () => {
@@ -123,7 +127,7 @@ events.on<{product: IProduct}>(EventEnum.CardPreviewPurchase, ({product}) =>{
 });
 
 events.on<{product: IProduct}>(EventEnum.BasketAddProduct, () =>{
-    header.render({count: basketModel.basketLength});
+    header.render({counter: basketModel.basketLength});
 });
 
 events.on<{product: IProduct}>(EventEnum.CardPreviewDelete, ({product}) =>{
@@ -132,7 +136,7 @@ events.on<{product: IProduct}>(EventEnum.CardPreviewDelete, ({product}) =>{
 });
 
 events.on<{product: IProduct}>(EventEnum.BasketDeleteProduct, () =>{
-    header.render({count: basketModel.basketLength});
+    header.render({counter: basketModel.basketLength});
 });
 
 events.on(EventEnum.BasketOpen, () => {
@@ -144,7 +148,11 @@ events.on(EventEnum.BasketOpen, () => {
         });
         return cardBasket.render({...item, index: index + 1});
     });
-    modal.render({content: basket.render({items: cardBasketArray, totalPrice: basketModel.amountBasket})});
+    modal.render({content: basket.render({
+        basket: cardBasketArray, 
+        total: basketModel.amountBasket,
+        isValid: basketModel.basketLength > 0
+    })});
     modal.open();
 });
 
@@ -158,7 +166,11 @@ events.on<{product: IProduct}>(EventEnum.CardBasketDelete, ({product}) => {
         });
         return cardBasket.render({...item, index: index + 1});
     });
-    modal.render({content: basket.render({items: cardBasketArray, totalPrice: basketModel.amountBasket})});
+    modal.render({content: basket.render({
+        basket: cardBasketArray, 
+        total: basketModel.amountBasket,
+        isValid: basketModel.basketLength > 0
+    })});
 });
 
 events.on(EventEnum.BasketOrderButtonClick, () => {
@@ -171,32 +183,45 @@ events.on(EventEnum.BasketOrderButtonClick, () => {
         })})
 });
 
-events.on<{payment: TPayment}>(EventEnum.BuyerChange, () => {
-    const errors = buyerModel.validateForm();
-    const requiredErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
-        const fieldsToCheck = ['payment', 'address'];
-        return fieldsToCheck.includes(error[0]);
-    }));
-    events.emit(EventEnum.FormOrderValidated, {errors: requiredErrors});
+events.on(EventEnum.FormOrderSetPayment, ({payment}: {payment: TPayment}) => {
+    buyerModel.buyerData = { payment };
 });
 
-events.on<{address: string}>(EventEnum.BuyerChange, () => {
+events.on(EventEnum.FormOrderSetAddress, ({address}: {address: string}) => {
+    buyerModel.buyerData = { address };
+});
+
+events.on(EventEnum.FormContactsChangeEmail, ({email}: {email: string}) => {
+    buyerModel.buyerData = { email };
+});
+
+events.on(EventEnum.FormContactsChangePhone, ({phone}: {phone: string}) => {
+    buyerModel.buyerData = { phone };
+});
+
+events.on(EventEnum.BuyerChange, () => {
     const errors = buyerModel.validateForm();
-    const requiredErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
-        const fieldsToCheck = ['payment', 'address'];
-        return fieldsToCheck.includes(error[0]);
+    const orderErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
+        return ['payment', 'address'].includes(error[0]);
     }));
-    events.emit(EventEnum.FormOrderValidated, {errors: requiredErrors});
-})
+    const contactsErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
+        return ['email', 'phone'].includes(error[0]);
+    }));
+    
+    events.emit(EventEnum.FormOrderValidated, {errors: orderErrors});
+    events.emit(EventEnum.FormContactsValidated, {errors: contactsErrors});
+});
 
 events.on<{errors: IErrorsBayer}>(EventEnum.FormOrderValidated, ({errors}) => {
     const isValid = !('payment' in errors) && !('address' in errors);
-    modal.render({content: formOrder.render({
-            payment: buyerModel.buyerData?.payment || undefined,
-            address: buyerModel.buyerData?.address,
-            errors,
-            isValid,
-        })})
+    formOrder.errors = errors as any;
+    formOrder.isValid = isValid;
+});
+
+events.on<{errors: IErrorsBayer}>(EventEnum.FormContactsValidated, ({errors}) => {
+    const isValid = !('email' in errors) && !('phone' in errors);
+    formContacts.errors = errors as any;
+    formContacts.isValid = isValid;
 });
 
 events.on(EventEnum.FormOrderSubmit, () => {
@@ -205,34 +230,6 @@ events.on(EventEnum.FormOrderSubmit, () => {
             phone: '',
             errors: {},
             isValid: false,
-        })})
-});
-
-events.on<{email: string}>(EventEnum.BuyerChange, () => {
-    const errors = buyerModel.validateForm();
-    const requiredErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
-        const fieldsToCheck = ['email', 'phone'];
-        return fieldsToCheck.includes(error[0]);
-    }));
-    events.emit(EventEnum.FormContactsValidated, {errors: requiredErrors});
-});
-
-events.on<{phone: string}>(EventEnum.BuyerChange, () => {
-    const errors = buyerModel.validateForm();
-    const requiredErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
-        const fieldsToCheck = ['email', 'phone'];
-        return fieldsToCheck.includes(error[0]);
-    }));
-    events.emit(EventEnum.FormContactsValidated, {errors: requiredErrors});
-});
-
-events.on<{errors: IErrorsBayer}>(EventEnum.FormContactsValidated, ({errors}) => {
-    const isValid = !('email' in errors) && !('phone' in errors);
-    modal.render({content: formContacts.render({
-            email: buyerModel.buyerData?.email,
-            phone: buyerModel.buyerData?.phone,
-            errors,
-            isValid,
         })})
 });
 
@@ -258,34 +255,9 @@ events.on(EventEnum.SuccessSubmit, () => {
     modal.close();
 });
 
-// подписываемся на собитие отчистки корзины
 events.on(EventEnum.BasketClear, () => {
-    header.render({count: basketModel.amountBasket});
+    header.render({counter: basketModel.amountBasket});
 });
-
-// подписываемся на событие изменения способа оплаты в форме заказа
-events.on<{payment: TPayment}>(EventEnum.FormOrderSetPayment, ({payment}) => {
-    buyerModel.buyerData = { payment };
-});
-
-// подписываемся на событие изменения адреса в форме заказа
-events.on<{address: string}>(EventEnum.FormOrderSetAddress, ({address}) => {
-    buyerModel.buyerData = { address };
-});
-
-// подписываемся на событие изменения почты в форме контакта
-events.on<{email: string}>(EventEnum.FormContactsChangeEmail, ({email}) => {
-    buyerModel.buyerData = { email };
-});
-
-// подписываемся на событие изменения телефона в форме контакта
-events.on<{phone: string}>(EventEnum.FormContactsChangePhone, ({phone}) => {
-    buyerModel.buyerData = { phone };
-});
-
-api.getCatalogProducts().then((data) =>{
-    catalogModel.catalogData = data;
-}).catch();
 
 events.on(EventEnum.CloseModal, () => {
     modal.close();
