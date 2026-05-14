@@ -1,7 +1,10 @@
 import { ensureElement } from "../../../utils/utils";
-import { Card, ICard } from "./Card";
-import { ICardActions } from "../../../types";
+import { Card } from "./Card";
+import { ICardActions, IProduct } from "../../../types";
 
+export interface ICard extends Partial<IProduct> {
+    index?: number;
+}
 
 export class CardInBasket extends Card<ICard> {
     protected cardIndex: HTMLElement;

@@ -3,9 +3,7 @@
 
 export enum EventEnum {
     BasketOpen = 'basket:open',
-    BasketAddProduct = 'basketModel:add',
-    BasketDeleteProduct = 'basketModel:delete',
-    BasketClear = 'basketModel:clear',
+    BasketChange = 'basketModel:change',
     BasketOrderButtonClick = 'basket:orderButtonClick',
     BuyerChange = 'buyerModel:change',
     BuyerClearData = 'buyerModel:clearData',

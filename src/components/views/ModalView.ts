@@ -27,10 +27,8 @@ export class ModalView extends Component<ModalContent> {
         });
     };
 
-    set content(content: HTMLElement | null) {
-        if (content) {
-            this.modalContent.replaceChildren(content);
-        }
+    set content(content: HTMLElement) {
+        this.modalContent.replaceChildren(content);
     }
 
     open(): void {
@@ -39,6 +37,5 @@ export class ModalView extends Component<ModalContent> {
 
     close(): void {
         this.container.classList.remove('modal_active');
-        this.content = null;
     };
 }

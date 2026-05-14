@@ -1,12 +1,7 @@
-import { IProduct } from "../../../types";
 import { Component } from "../../base/Component";
 import { ensureElement } from "../../../utils/utils";
 
-export interface ICard extends Partial<IProduct> {
-    index?: number;
-}
-
-export abstract class Card<T extends ICard> extends Component <T> {
+export abstract class Card<T> extends Component <T> {
     protected cardTitle: HTMLElement;
     protected cardPrice: HTMLElement;
 

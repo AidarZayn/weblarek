@@ -3,11 +3,9 @@ import { Card } from "./Card";
 import { categoryMap, CDN_URL } from "../../../utils/constants";
 import { ICardActions, IProduct } from "../../../types";
 
-export type TCardPreview = Pick<IProduct, 'image' | 'category' | 'description'> & {isInBasket: boolean}
+export type TCardPreview = Pick<IProduct, 'image' | 'category' | 'description'> & { buttonText: string, isDisabled: boolean }
 
 type CategoryKey = keyof typeof categoryMap;
-
-type CardButtonText = "В корзину" | "Удалить из корзины" | "Недоступно";
 
 export class CardPreview extends Card<TCardPreview> {
     protected cardImage: HTMLImageElement;
@@ -47,30 +45,11 @@ export class CardPreview extends Card<TCardPreview> {
         this.cardDescription.textContent = value;
     }
 
-    set buttonText(value: CardButtonText) {
-        if (this.cardButton) {
-            this.cardButton.textContent = value;
-            this.cardButton.disabled = value === "Недоступно";
-        }
+    set buttonText(value: string) {
+        this.cardButton.textContent = value;
     }
 
-    override set price(value: number | null) {
-        if (value) {
-            this.cardButton.disabled = false;
-        }else {
-            this.cardButton.textContent = 'Недоступно';
-            this.cardButton.disabled = true;
-        }
-        super.price = value;
-    }
-
-    set isInBasket(value: boolean) {
-        if (!this.cardButton.disabled) {
-            if (value) {
-                this.cardButton.textContent = 'Удалить из корзины';
-            }else {
-                this.cardButton.textContent = 'Купить';
-            }
-        }
+    set isDisabled(value: boolean) {
+        this.cardButton.disabled = value;
     }
 }

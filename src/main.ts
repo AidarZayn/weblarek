@@ -114,29 +114,45 @@ events.on<{product: IProduct}>(EventEnum.CardCatalogClick, ({product}) => {
     catalogModel.selectedProductData = product.id;
 });
 
+function getCardButtonState(product: IProduct, isInBasket: boolean) {
+    let buttonText = 'Купить';
+    let isDisabled = false;
+
+    if (product.price === null) {
+        buttonText = 'Недоступно';
+        isDisabled = true;
+    } else if (isInBasket) {
+        buttonText = 'Удалить из корзины';
+    }
+
+    return { buttonText, isDisabled };
+}
+
 events.on<{product: IProduct}>(EventEnum.CatalogSetSelectedProduct, ({product}) => {
     const isInBasket = basketModel.hasProductInBasket(product.id);
-    const preview = cardPreview.render({...product, isInBasket});
+    const { buttonText, isDisabled } = getCardButtonState(product, isInBasket);
+
+    const preview = cardPreview.render({...product, buttonText, isDisabled});
     modal.render({content: preview});
     modal.open();
 });
 
 events.on<{product: IProduct}>(EventEnum.CardPreviewPurchase, ({product}) =>{
-    modal.close();
     basketModel.addItemInBasket(product);
 });
 
-events.on<{product: IProduct}>(EventEnum.BasketAddProduct, () =>{
+events.on(EventEnum.BasketChange, () =>{
     header.render({counter: basketModel.basketLength});
+    const selectedProduct = catalogModel.selectedProductData;
+    if (selectedProduct) {
+        const isInBasket = basketModel.hasProductInBasket(selectedProduct.id);
+        const { buttonText, isDisabled } = getCardButtonState(selectedProduct, isInBasket);
+        cardPreview.render({buttonText, isDisabled});
+    }
 });
 
 events.on<{product: IProduct}>(EventEnum.CardPreviewDelete, ({product}) =>{
-    modal.close();
     basketModel.deleteProductInBasket(product.id);
-});
-
-events.on<{product: IProduct}>(EventEnum.BasketDeleteProduct, () =>{
-    header.render({counter: basketModel.basketLength});
 });
 
 events.on(EventEnum.BasketOpen, () => {
@@ -257,10 +273,6 @@ events.on(EventEnum.FormContactsSubmit, () => {
 
 events.on(EventEnum.SuccessSubmit, () => {
     modal.close();
-});
-
-events.on(EventEnum.BasketClear, () => {
-    header.render({counter: basketModel.amountBasket});
 });
 
 events.on(EventEnum.CloseModal, () => {
