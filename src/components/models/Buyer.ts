@@ -49,7 +49,6 @@ export class Buyer {
         if (this.buyer?.payment === null) {
             errors.payment = 'Поле \'Способ оплаты\' не может быть пустым'
         }
-        this.events.emit(EventEnum.BuyerValidate);
         return errors;
     }
 }

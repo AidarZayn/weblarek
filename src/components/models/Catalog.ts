@@ -13,7 +13,7 @@ export class Catalog {
 
     set catalogData(products: IProduct[]) {
         this.products = products;
-        this.events.emit(EventEnum.CatalogSetAllProducts, {products});
+        this.events.emit(EventEnum.CatalogSetAllProducts);
     }
 
     get selectedProductData(): IProduct | null {
@@ -23,7 +23,7 @@ export class Catalog {
     set selectedProductData(id: string) {
         const product = this.findProductById(id);
         this.selectedProduct = product ?? null;
-        this.events.emit(EventEnum.CatalogSetSelectedProduct, {product});
+        this.events.emit(EventEnum.CatalogSetSelectedProduct);
     }
 
     findProductById(productId: string): IProduct | undefined {

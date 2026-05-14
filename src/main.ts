@@ -97,8 +97,8 @@ api.getCatalogProducts().then((data) =>{
     catalogModel.catalogData = data;
 }).catch();
 
-events.on<{products: IProduct[]}>(EventEnum.CatalogSetAllProducts, ({products}) => {
-    const itemCards = products.map((item) => {
+events.on(EventEnum.CatalogSetAllProducts, () => {
+    const itemCards = catalogModel.catalogData.map((item) => {
         const onClick = () => {
             events.emit(EventEnum.CardCatalogClick, {product: item});
         };
@@ -128,13 +128,16 @@ function getCardButtonState(product: IProduct, isInBasket: boolean) {
     return { buttonText, isDisabled };
 }
 
-events.on<{product: IProduct}>(EventEnum.CatalogSetSelectedProduct, ({product}) => {
-    const isInBasket = basketModel.hasProductInBasket(product.id);
-    const { buttonText, isDisabled } = getCardButtonState(product, isInBasket);
+events.on(EventEnum.CatalogSetSelectedProduct, () => {
+    const product = catalogModel.selectedProductData;
+    if (product) {
+        const isInBasket = basketModel.hasProductInBasket(product.id);
+        const { buttonText, isDisabled } = getCardButtonState(product, isInBasket);
 
-    const preview = cardPreview.render({...product, buttonText, isDisabled});
-    modal.render({content: preview});
-    modal.open();
+        const preview = cardPreview.render({...product, buttonText, isDisabled});
+        modal.render({content: preview});
+        modal.open();
+    }
 });
 
 events.on<{product: IProduct}>(EventEnum.CardPreviewPurchase, ({product}) =>{
