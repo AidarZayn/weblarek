@@ -51,6 +51,7 @@ const gallery = new GalleryView(catalogElement, events);
 const modal = new ModalView(modalElement, events);
 const header = new HeaderView(headerElement, events);
 const basket = new BasketView(cloneTemplate(basketTemplate), events);
+
 const cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
     purchaseButtonClickHandler: () => {
         events.emit(EventEnum.CardPreviewButtonClick);
@@ -153,9 +154,7 @@ events.on(EventEnum.BasketChange, () =>{
         const { buttonText, isDisabled } = getCardButtonState(selectedProduct, isInBasket);
         cardPreview.render({buttonText, isDisabled});
     }
-});
 
-events.on(EventEnum.BasketOpen, () => {
     const cardBasketArray = basketModel.productsBasket.map((item, index) => {
         const cardBasket = new CardInBasket(cloneTemplate(cardBasketTemplate), {
             deleteButtonClickHandler: () => {
@@ -164,29 +163,22 @@ events.on(EventEnum.BasketOpen, () => {
         });
         return cardBasket.render({...item, index: index + 1});
     });
-    modal.render({content: basket.render({
-        basket: cardBasketArray, 
+
+    basket.render({
+        basket: cardBasketArray,
         total: basketModel.amountBasket,
         isValid: basketModel.basketLength > 0
-    })});
+    });
+});
+
+events.on(EventEnum.BasketOpen, () => {
+    modal.render({content: basket.render({isValid: basketModel.basketLength > 0})});
     modal.open();
 });
 
 events.on<{product: IProduct}>(EventEnum.CardBasketDelete, ({product}) => {
     basketModel.deleteProductInBasket(product.id);
-    const cardBasketArray = basketModel.productsBasket.map((item, index) => {
-        const cardBasket = new CardInBasket(cloneTemplate(cardBasketTemplate), {
-            deleteButtonClickHandler: () => {
-                events.emit(EventEnum.CardBasketDelete, {product: item});
-            }
-        });
-        return cardBasket.render({...item, index: index + 1});
-    });
-    modal.render({content: basket.render({
-        basket: cardBasketArray, 
-        total: basketModel.amountBasket,
-        isValid: basketModel.basketLength > 0
-    })});
+    modal.render({content: basket.render()});
 });
 
 events.on(EventEnum.BasketOrderButtonClick, () => {
