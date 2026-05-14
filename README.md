@@ -280,8 +280,7 @@ Presenter - презентер содержит основную логику п
 `set category(category: string)` - сеттер, который устанавливает категорию карточки. Также css-классы исходя из `categoryMap`.
 `set description(value: string)` - сеттер, который устанавливает текст описания карточки
 `set buttonText(value: CardButtonText)` - сеттер, который устанавливает текст для кнопки карточки
-`override set price(value: number | null)` - сеттер, который переопределяет стоимость у сеттера родителя, управляемая презентером
-`set isInBasket(value: boolean)` - сеттер, который меняет текст кнопки у карточки товара, управляемая презентером
+`set isDisabled(value: boolean)` - сеттер, который управляет состоянием disabled для кнопки карточки
 
 Класс `Form`
 Является родительским классом для формы
@@ -316,7 +315,7 @@ Presenter - презентер содержит основную логику п
 
 Методы класса:
 .
-`set payment(value: 'card' | 'cash' | '')` - сеттер, который устанавливает способ оплаты.
+`set payment(value: 'card' | 'cash' | null)` - сеттер, который устанавливает способ оплаты.
 `set address(address: string)` - сеттер, который устанавливает адрес доставки.
 
 Класс BasketView
@@ -379,28 +378,20 @@ Presenter - презентер содержит основную логику п
 Все события перечислены в файле Events.ts
 
 1. `basket:open` — Открытие модального окна корзины.
-2. `basketModel:add` — Добавление товара в модель корзины.
-3. `basketModel:delete` — Удаление товара из модели корзины.
-4. `basketModel:clear` — Полная очистка корзины.
-5. `basket:orderButtonClick` — Переход к оформлению заказа из корзины.
-6. `buyerModel:change` — Изменение данных покупателя в модели.
-7. `buyerModel:clearData` — Очистка данных покупателя.
-8. `buyerModel:validate` — Проверка валидности данных покупателя.
-9. `catalogModel:setAll` — Установка списка товаров в каталоге.
-10. `catalogModel:setSelected` — Выбор конкретного товара для предпросмотра.
-11. `cardCatalog:click` — Клик по карточке товара в каталоге.
-12. `cardBasket:delete` — Клик по кнопке удаления товара в корзине.
-13. `cardPreview:buttonClick` — Общий клик по кнопке в окне предпросмотра.
-14. `cardPreview:purchase` — Добавление товара в корзину из окна предпросмотра.
-15. `cardPreview:delete` — Удаление товара из корзины через окно предпросмотра.
-16. `formOrder:validated` — Событие, уведомляющее о валидности формы заказа.
-17. `formOrder:submit` — Сабмит формы заказа (переход к контактам).
-18. `formOrder:changePayment` — Изменение способа оплаты.
-19. `formOrder:changeAddress` — Изменение адреса доставки.
-20. `formContacts:validated` — Событие, уведомляющее о валидности формы контактов.
-21. `formContacts:submit` — Сабмит формы контактов (отправка заказа).
-22. `formContacts:changeEmail` — Изменение email в форме контактов.
-23. `formContacts:changePhone` — Изменение номера телефона в форме контактов.
-24. `success:submit` — Закрытие окна успешного оформления заказа.
-25. `modal:close` — Закрытие модального окна.
-26. `larekApi:getCatalogProducts` — Получение списка товаров с сервера.
+2. `basketModel:change` — Изменение данных в модели корзины.
+3. `basket:orderButtonClick` — Переход к оформлению заказа из корзины.
+4. `buyerModel:change` — Изменение данных покупателя в модели.
+5. `buyerModel:clearData` — Очистка данных покупателя.
+6. `catalogModel:setAll` — Установка списка товаров в каталоге.
+7. `catalogModel:setSelected` — Выбор конкретного товара для предпросмотра.
+8. `cardCatalog:click` — Клик по карточке товара в каталоге.
+9. `cardBasket:delete` — Клик по кнопке удаления товара в корзине.
+10. `cardPreview:buttonClick` — Общий клик по кнопке в окне предпросмотра.
+11. `formOrder:submit` — Сабмит формы заказа (переход к контактам).
+12. `formOrder:changePayment` — Изменение способа оплаты.
+13. `formOrder:changeAddress` — Изменение адреса доставки.
+14. `formContacts:submit` — Сабмит формы контактов (отправка заказа).
+15. `formContacts:changeEmail` — Изменение email в форме контактов.
+16. `formContacts:changePhone` — Изменение номера телефона в форме контактов.
+17. `success:submit` — Закрытие окна успешного оформления заказа.
+18. `modal:close` — Закрытие модального окна.

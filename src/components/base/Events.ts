@@ -12,19 +12,14 @@ export enum EventEnum {
     CardCatalogClick = 'cardCatalog:click',
     CardBasketDelete = 'cardBasket:delete',
     CardPreviewButtonClick = 'cardPreview:buttonClick',
-    CardPreviewPurchase = 'cardPreview:purchase',
-    CardPreviewDelete = 'cardPreview:delete',
-    FormOrderValidated = 'formOrder:validated',
     FormOrderSubmit = 'formOrder:submit',
     FormOrderSetPayment = 'formOrder:changePayment',
     FormOrderSetAddress = 'formOrder:changeAddress',
-    FormContactsValidated = 'formContacts:validated',
     FormContactsSubmit = 'formContacts:submit',
     FormContactsChangeEmail = 'formContacts:changeEmail',
     FormContactsChangePhone = 'formContacts:changePhone',
     SuccessSubmit = 'success:submit',
     CloseModal = 'modal:close',
-    LarekApiGetCatalogProducts = 'larekApi:getCatalogProducts',
 }
 
 type EventName = string | RegExp;
