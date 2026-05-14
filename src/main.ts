@@ -8,8 +8,8 @@ import { CardCatalog } from "./components/views/Card/CardCatalog";
 import { CardInBasket } from "./components/views/Card/CardInBasket";
 import { CardPreview } from "./components/views/Card/CardPreview";
 
-import { FormContacts } from "./components/views/Form/FormContacts";
-import { FormOrder } from "./components/views/Form/FormOrder";
+import { FormContacts, IContactsForm } from "./components/views/Form/FormContacts";
+import { FormOrder, IOrderForm } from "./components/views/Form/FormOrder";
 
 import { BasketView } from "./components/views/BasketView";
 import { GalleryView } from "./components/views/GalleryView";
@@ -24,7 +24,7 @@ import { ApiModel } from './components/models/ApiModel'
 import { EventEmitter, EventEnum } from './components/base/Events';
 import { cloneTemplate, ensureElement } from './utils/utils';
 
-import type { IErrorsBayer, IProduct, TPayment } from "./types";
+import type { IProduct, TPayment } from "./types";
 
 const events = new EventEmitter();
 
@@ -182,18 +182,29 @@ events.on<{product: IProduct}>(EventEnum.CardBasketDelete, ({product}) => {
 });
 
 events.on(EventEnum.BasketOrderButtonClick, () => {
-    buyerModel.clearBuyerData();
-    modal.render({content: formOrder.render({
-            payment: '',
-            address: '',
-            errors: {},
-            isValid: false,
-        })})
+    if (!buyerModel.buyerData) {
+        buyerModel.buyerData = {};
+    }
+    const data = buyerModel.buyerData || { payment: null, address: '', email: '', phone: '' };
+    const errors = buyerModel.validateForm();
+    const orderErrors: Partial<Record<keyof IOrderForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
+        return ['payment', 'address'].includes(error[0]);
+    }));
+
+    const isValid = Object.keys(orderErrors).length === 0;
+
+    modal.render({
+        content: formOrder.render({
+            payment: data.payment,
+            address: data.address,
+            errors: orderErrors,
+            isValid: isValid,
+        })
+    })
 });
 
 events.on(EventEnum.FormOrderSetPayment, ({payment}: {payment: TPayment}) => {
     buyerModel.buyerData = { payment };
-    formOrder.payment = payment;
 });
 
 events.on(EventEnum.FormOrderSetAddress, ({address}: {address: string}) => {
@@ -209,44 +220,62 @@ events.on(EventEnum.FormContactsChangePhone, ({phone}: {phone: string}) => {
 });
 
 events.on(EventEnum.BuyerChange, () => {
+    const data = buyerModel.buyerData || { payment: null, address: '', email: '', phone: '' };
     const errors = buyerModel.validateForm();
-    const orderErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
+    
+    const orderErrors: Partial<Record<keyof IOrderForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
         return ['payment', 'address'].includes(error[0]);
     }));
-    const contactsErrors = Object.fromEntries(Object.entries(errors).filter((error) => {
+
+    const orderIsValid = Object.keys(orderErrors).length === 0;
+    
+    formOrder.render({
+        payment: data.payment,
+        address: data.address,
+        errors: orderErrors,
+        isValid: orderIsValid,
+    });
+
+    const contactsErrors: Partial<Record<keyof IContactsForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
         return ['email', 'phone'].includes(error[0]);
     }));
-    
-    events.emit(EventEnum.FormOrderValidated, {errors: orderErrors});
-    events.emit(EventEnum.FormContactsValidated, {errors: contactsErrors});
-});
 
-events.on<{errors: IErrorsBayer}>(EventEnum.FormOrderValidated, ({errors}) => {
-    const isValid = !('payment' in errors) && !('address' in errors);
-    formOrder.errors = errors as any;
-    formOrder.isValid = isValid;
-    if (buyerModel.buyerData) {
-        formOrder.payment = buyerModel.buyerData.payment ?? '';
-    }
-});
+    const contactsIsValid = Object.keys(contactsErrors).length === 0;
 
-events.on<{errors: IErrorsBayer}>(EventEnum.FormContactsValidated, ({errors}) => {
-    const isValid = !('email' in errors) && !('phone' in errors);
-    formContacts.errors = errors as any;
-    formContacts.isValid = isValid;
+    formContacts.render({
+        email: data.email,
+        phone: data.phone,
+        errors: contactsErrors,
+        isValid: contactsIsValid,
+    });
 });
 
 events.on(EventEnum.FormOrderSubmit, () => {
-    modal.render({content: formContacts.render({
-            email: '',
-            phone: '',
-            errors: {},
-            isValid: false,
-        })})
+    const data = buyerModel.buyerData || { payment: null, address: '', email: '', phone: '' };
+    const errors = buyerModel.validateForm();
+    const contactsErrors: Partial<Record<keyof IContactsForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
+        return ['email', 'phone'].includes(error[0]);
+    }));
+
+    const isValid = Object.keys(contactsErrors).length === 0;
+
+    modal.render({
+        content: formContacts.render({
+            email: data.email,
+            phone: data.phone,
+            errors: contactsErrors,
+            isValid: isValid,
+        })
+    })
 });
 
 events.on(EventEnum.FormContactsSubmit, () => {
-    const data = buyerModel.buyerData;
+    const errors = buyerModel.validateForm();
+    
+    if (Object.keys(errors).length > 0) {
+        return;
+    }
+    const data = buyerModel.buyerData || { payment: null, address: '', email: '', phone: '' };
     const ids = basketModel.productsBasket.map(item => item.id);
     api.postOrder({
         ...data,

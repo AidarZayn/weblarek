@@ -3,7 +3,7 @@ import { ensureAllElements, ensureElement } from "../../../utils/utils";
 import { Form } from "./Form";
 
 export interface IOrderForm {
-    payment: 'card' | 'cash' | '';
+    payment: 'card' | 'cash' | null;
     address: string;
 }
 
@@ -33,7 +33,7 @@ export class FormOrder extends Form<IOrderForm> {
         });
     };
 
-    set payment(value: 'card' | 'cash' | '') {
+    set payment(value: 'card' | 'cash' | null) {
         this.paymentButtons.forEach((button) => {
             button.classList.toggle('button_alt-active', button.name === value);
         })

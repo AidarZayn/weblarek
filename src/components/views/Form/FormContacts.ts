@@ -2,7 +2,7 @@ import { ensureElement } from '../../../utils/utils';
 import { Form } from './Form';
 import { IFormActions } from "../../../types";
 
-interface IContactsForm {
+export interface IContactsForm {
     email: string;
     phone: string;
 }
