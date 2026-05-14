@@ -53,14 +53,7 @@ const header = new HeaderView(headerElement, events);
 const basket = new BasketView(cloneTemplate(basketTemplate), events);
 const cardPreview = new CardPreview(cloneTemplate(cardPreviewTemplate), {
     purchaseButtonClickHandler: () => {
-        const selectedProduct = catalogModel.selectedProductData;
-        if(selectedProduct) {
-            if (basketModel.hasProductInBasket(selectedProduct.id)) {
-                events.emit(EventEnum.CardPreviewDelete, {product: selectedProduct});
-            } else {
-                events.emit(EventEnum.CardPreviewPurchase, {product: selectedProduct});
-            }
-        }
+        events.emit(EventEnum.CardPreviewButtonClick);
     }});
 
 const formOrder  = new FormOrder(cloneTemplate(orderFormTemplate), {
@@ -140,8 +133,16 @@ events.on(EventEnum.CatalogSetSelectedProduct, () => {
     }
 });
 
-events.on<{product: IProduct}>(EventEnum.CardPreviewPurchase, ({product}) =>{
-    basketModel.addItemInBasket(product);
+events.on(EventEnum.CardPreviewButtonClick, () => {
+    const product = catalogModel.selectedProductData;
+    if (product) {
+        if (basketModel.hasProductInBasket(product.id)) {
+            basketModel.deleteProductInBasket(product.id);
+        } else {
+            basketModel.addItemInBasket(product);
+        }
+        modal.close();
+    }
 });
 
 events.on(EventEnum.BasketChange, () =>{
@@ -152,10 +153,6 @@ events.on(EventEnum.BasketChange, () =>{
         const { buttonText, isDisabled } = getCardButtonState(selectedProduct, isInBasket);
         cardPreview.render({buttonText, isDisabled});
     }
-});
-
-events.on<{product: IProduct}>(EventEnum.CardPreviewDelete, ({product}) =>{
-    basketModel.deleteProductInBasket(product.id);
 });
 
 events.on(EventEnum.BasketOpen, () => {
