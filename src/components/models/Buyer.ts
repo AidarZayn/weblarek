@@ -37,17 +37,17 @@ export class Buyer {
 
     validateForm(): IErrorsBayer {
         const errors: IErrorsBayer = {};
-        if (this.buyer?.address === '') {
-            errors.address = 'Поле \'Адрес\' не может быть пустым'
+        if (!this.buyer || this.buyer.address === '') {
+            errors.address = "Поле 'Адрес' не может быть пустым";
         }
-        if (this.buyer?.phone === '') {
-            errors.phone = 'Поле \'Телефон\' не может быть пустым'
+        if (!this.buyer || this.buyer.phone === '') {
+            errors.phone = "Поле 'Телефон' не может быть пустым";
         }
-        if (this.buyer?.email === '') {
-            errors.email = 'Поле \'Эл. почта\' не может быть пустым'
+        if (!this.buyer || this.buyer.email === '') {
+            errors.email = "Поле 'Эл. почта' не может быть пустым";
         }
-        if (this.buyer?.payment === null) {
-            errors.payment = 'Поле \'Способ оплаты\' не может быть пустым'
+        if (!this.buyer || this.buyer.payment === null) {
+            errors.payment = "Поле 'Способ оплаты' не может быть пустым";
         }
         return errors;
     }

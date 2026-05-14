@@ -182,11 +182,9 @@ events.on<{product: IProduct}>(EventEnum.CardBasketDelete, ({product}) => {
 });
 
 events.on(EventEnum.BasketOrderButtonClick, () => {
-    if (!buyerModel.buyerData) {
-        buyerModel.buyerData = {};
-    }
     const data = buyerModel.buyerData;
     const errors = buyerModel.validateForm();
+
     const orderErrors: Partial<Record<keyof IOrderForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
         return ['payment', 'address'].includes(error[0]);
     }));
@@ -196,7 +194,7 @@ events.on(EventEnum.BasketOrderButtonClick, () => {
     modal.render({
         content: formOrder.render({
             payment: data?.payment ?? null,
-            address: data?.address,
+            address: data?.address ?? '',
             errors: orderErrors,
             isValid: isValid,
         })
@@ -222,13 +220,13 @@ events.on(EventEnum.FormContactsChangePhone, ({phone}: {phone: string}) => {
 events.on(EventEnum.BuyerChange, () => {
     const data = buyerModel.buyerData;
     const errors = buyerModel.validateForm();
-    
+
     const orderErrors: Partial<Record<keyof IOrderForm, string>> = Object.fromEntries(Object.entries(errors).filter((error) => {
         return ['payment', 'address'].includes(error[0]);
     }));
 
     const orderIsValid = Object.keys(orderErrors).length === 0;
-    
+
     formOrder.render({
         payment: data?.payment ?? null,
         address: data?.address,
@@ -271,7 +269,7 @@ events.on(EventEnum.FormOrderSubmit, () => {
 
 events.on(EventEnum.FormContactsSubmit, () => {
     const errors = buyerModel.validateForm();
-    
+
     if (Object.keys(errors).length > 0) {
         return;
     }
